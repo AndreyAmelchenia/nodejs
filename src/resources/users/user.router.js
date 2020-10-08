@@ -1,12 +1,17 @@
 const router = require('express').Router();
-const fs = require('fs');
-const path = require('path');
 const User = require('./user.model');
 const usersService = require('./user.service');
-// const usersData = require('./users.data.json');
 
-router.param('id', (req, res, next, id) => {
-  console.log(id);
+router.route('/').post(async (req, res, next) => {
+  const user = await usersService.createUser(req.body);
+  const exists = await usersService.existsUser(user);
+  if (exists) {
+    res.send(`A user with this name:"${req.body.name}" exists!!!`);
+  } else {
+    const users = await usersService.postUser(user);
+    await usersService.writeUsers(users);
+    res.json(User.toResponse(user));
+  }
   next();
 });
 
@@ -16,7 +21,7 @@ router.route('/:id').get(async (req, res, next) => {
     const user = await usersService.getId(req.params.id);
     res.json(User.toResponse(user));
   } else {
-    res.send(`Id ${req.params.id} User no exists`);
+    res.send(`A user with this Id:"${req.params.id}" no exists!!!`);
   }
   next();
 });
@@ -24,48 +29,31 @@ router.route('/:id').get(async (req, res, next) => {
 router.route('/:id').put(async (req, res, next) => {
   const exists = await usersService.existsId(req.params.id);
   if (exists) {
-    const data = await usersService.putUser(req.params.id, req.body);
-    fs.writeFile(
-      path.join(__dirname, './users.data.json'),
-      JSON.stringify(data),
-      error => {
-        if (error) {
-          console.error('Post error: ', error);
-        }
-      }
-    );
-    const userUpdate = await usersService.getId(req.params.id, data);
+    const users = await usersService.putUser(req.params.id, req.body);
+    await usersService.writeUsers(users);
+    const userUpdate = await usersService.getId(req.params.id, users);
     res.json(User.toResponse(userUpdate));
   } else {
-    res.send(`Id ${req.params.id} no exists`);
+    res.send(`A user with this Id:"${req.params.id}" no exists!!!`);
+  }
+  next();
+});
+
+router.route('/:id').delete(async (req, res, next) => {
+  const exists = await usersService.existsId(req.params.id);
+  if (exists) {
+    const users = await usersService.deleteUser(req.params.id);
+    await usersService.writeUsers(users);
+    res.send(`A user with this Id:"${req.params.id}" delete!!!`);
+  } else {
+    res.send(`A user with this Id:"${req.params.id}" no exists!!!`);
   }
   next();
 });
 
 router.route('/').get(async (req, res) => {
   const users = await usersService.getAll();
-  // map user fields to exclude secret fields like "password"
   res.json(users.map(User.toResponse));
-});
-
-router.route('/').post(async (req, res) => {
-  const user = await usersService.createUser(req.body);
-  const exists = await usersService.existsUser(user);
-  if (exists) {
-    res.send('A user with this name exists!!!');
-  } else {
-    const data = await usersService.postUser(user);
-    fs.writeFile(
-      path.join(__dirname, './users.data.json'),
-      JSON.stringify(data),
-      error => {
-        if (error) {
-          console.error('Post error: ', error);
-        }
-      }
-    );
-    res.json(User.toResponse(user));
-  }
 });
 
 module.exports = router;

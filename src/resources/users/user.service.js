@@ -1,3 +1,5 @@
+const fs = require('fs');
+const path = require('path');
 const usersRepo = require('./user.memory.repository');
 const data = require('./users.data.json');
 const User = require('./user.model');
@@ -25,6 +27,17 @@ const createUser = async body => {
   });
 };
 
+const writeUsers = async users => {
+  fs.writeFile(
+    path.join(__dirname, './users.data.json'),
+    JSON.stringify(users),
+    error => {
+      if (error) {
+        console.error('Post error: ', error);
+      }
+    }
+  );
+};
 module.exports = {
   getAll,
   getId,
@@ -33,5 +46,6 @@ module.exports = {
   deleteUser,
   existsUser,
   createUser,
-  existsId
+  existsId,
+  writeUsers
 };
