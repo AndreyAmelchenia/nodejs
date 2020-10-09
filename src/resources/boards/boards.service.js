@@ -8,7 +8,7 @@ const getAll = () => boardsRepo.getAll(data);
 
 const getId = id => boardsRepo.getId(id, data);
 
-const postBoard = user => data.push(user);
+const postBoard = board => data.push(board);
 
 const putBoard = (id, board) => {
   data = boardsRepo.putObj(id, board, data);

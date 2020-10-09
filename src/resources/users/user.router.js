@@ -1,6 +1,6 @@
 const router = require('express').Router();
 const User = require('./user.model');
-// const data = require('./users.data.json');
+const tasksService = require('../tasks/tasks.service');
 const usersService = require('./user.service');
 
 router.route('/:id').get(async (req, res, next) => {
@@ -30,7 +30,9 @@ router.route('/:id').put(async (req, res, next) => {
 router.route('/:id').delete(async (req, res, next) => {
   const exists = await usersService.existsId(req.params.id);
   if (exists) {
+    res.status(200);
     usersService.deleteUser(req.params.id);
+    tasksService.updateTaskByUser(req.params.id);
     res.json({ value: `A user with this Id:"${req.params.id}" no delete!!!` });
   } else {
     res.json({ value: `A user with this Id:"${req.params.id}" no exists!!!` });

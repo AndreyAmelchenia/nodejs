@@ -1,6 +1,6 @@
 const getAll = async data => data;
 
-const getAllTasksById = async (id, data) => data;
+// const getAllTasksById = async (id, data) => data;
 
 const getId = (id, data) => data.find(elem => elem.id === id);
 
@@ -11,17 +11,18 @@ const putObj = (id, obj, data) =>
 
 const deleteObj = (id, data) => data.filter(elem => elem.id !== id);
 
+const deleteObjByIdBoard = (id, data) =>
+  data.filter(elem => elem.boardId !== id);
+
+const updateObjByIdUser = (id, data) =>
+  data.map(elem => (elem.userId === id ? { ...elem, userId: null } : elem));
+
 const existsObj = async (obj, data) =>
   data.some(elem => elem.name === obj.name);
 
 const existsId = async (id, data) => {
   return data.some(elem => elem.id === id);
 };
-
-const postTask = (id, obj, data) =>
-  data.map(elem =>
-    elem.id === id ? { ...elem, columns: [...elem.columns, obj] } : elem
-  );
 
 module.exports = {
   getAll,
@@ -31,6 +32,6 @@ module.exports = {
   deleteObj,
   existsObj,
   existsId,
-  getAllTasksById,
-  postTask
+  deleteObjByIdBoard,
+  updateObjByIdUser
 };
