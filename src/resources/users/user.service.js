@@ -1,18 +1,20 @@
-const fs = require('fs');
-const path = require('path');
 const usersRepo = require('./user.memory.repository');
-const data = require('./users.data.json');
+
 const User = require('./user.model');
+
+let data = [];
 
 const getAll = () => usersRepo.getAll(data);
 
-const getId = (id, users = data) => usersRepo.getId(id, users);
+const getId = id => usersRepo.getId(id, data);
 
-const postUser = user => usersRepo.postObj(user, data);
+const postUser = user => data.push(user);
 
-const putUser = (id, user) => usersRepo.putObj(id, user, data);
+const putUser = (id, user) => {
+  data = usersRepo.putObj(id, user, data);
+};
 
-const deleteUser = id => usersRepo.deleteObj(id, data);
+const deleteUser = id => (data = usersRepo.deleteObj(id, data));
 
 const existsUser = user => usersRepo.existsObj(user, data);
 
@@ -27,17 +29,6 @@ const createUser = async body => {
   });
 };
 
-const writeUsers = async users => {
-  fs.writeFile(
-    path.join(__dirname, './users.data.json'),
-    JSON.stringify(users),
-    error => {
-      if (error) {
-        console.error('Post error: ', error);
-      }
-    }
-  );
-};
 module.exports = {
   getAll,
   getId,
@@ -46,6 +37,5 @@ module.exports = {
   deleteUser,
   existsUser,
   createUser,
-  existsId,
-  writeUsers
+  existsId
 };
