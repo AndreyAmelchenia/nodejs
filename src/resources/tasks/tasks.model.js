@@ -18,10 +18,6 @@ class Task {
     this.boardId = boardId;
     this.columnId = columnId;
   }
-  // static toResponse(board) {
-  //   const { columns } = board;
-  //   return columns;
-  // }
 }
 
 module.exports = Task;

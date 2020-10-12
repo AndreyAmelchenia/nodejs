@@ -7,12 +7,12 @@ router.route('/').get(async (req, res) => {
 });
 
 router.route('/').post(async (req, res) => {
-  const board = await tasksService.createTask({
+  const task = await tasksService.createTask({
     ...req.body,
     boardId: req.params.boardId
   });
-  await tasksService.postTask(board);
-  res.json(board);
+  await tasksService.postTask(task);
+  res.json(task);
 });
 
 router.route('/:taskId').get(async (req, res) => {
@@ -29,7 +29,6 @@ router.route('/:taskId').get(async (req, res) => {
 });
 
 router.route('/:taskId').put(async (req, res) => {
-  console.log();
   const exists = await tasksService.existsId(req.params.taskId);
   if (exists) {
     await tasksService.putTask(req.params.taskId, req.body);

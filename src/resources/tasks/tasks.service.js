@@ -1,26 +1,28 @@
+const requireDir = require('require-dir');
+
 const tasksRepo = require('../memory/obj.memory.repository');
 
 const Task = require('./tasks.model');
 
-let data = [];
+const newData = requireDir('../memory/tasksData');
+
+let data = Object.values(newData);
 
 const getAll = () => tasksRepo.getAll(data);
 
-const postTask = task => data.push(task);
+const postTask = task => (data = tasksRepo.postObj('tasksData', task, data));
 
 const getId = id => tasksRepo.getId(id, data);
 
-const putTask = (id, task) => {
-  data = tasksRepo.putObj(id, task, data);
-};
+const putTask = (id, task) =>
+  (data = tasksRepo.putObj('tasksData', id, task, data));
+const deleteTask = id => (data = tasksRepo.deleteObj('tasksData', id, data));
 
-const deleteTask = id => (data = tasksRepo.deleteObj(id, data));
+const updateTaskByUser = id =>
+  (data = tasksRepo.updateObjByIdUser('tasksData', id, data));
 
-const updateTaskByUser = id => {
-  data = tasksRepo.updateObjByIdUser(id, data);
-};
-
-const deleteTaskByBoard = id => (data = tasksRepo.deleteObjByIdBoard(id, data));
+const deleteTaskByBoard = id =>
+  (data = tasksRepo.deleteObjByIdBoard('tasksData', id, data));
 
 const existsId = id => tasksRepo.existsId(id, data);
 

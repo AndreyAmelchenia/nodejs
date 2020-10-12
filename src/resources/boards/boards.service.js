@@ -1,18 +1,23 @@
+const requireDir = require('require-dir');
 const boardsRepo = require('../memory/obj.memory.repository');
 
 const Board = require('./boards.model');
 
-let data = [];
+const newData = requireDir('../memory/boardsData');
+
+let data = Object.values(newData);
 
 const getAll = () => boardsRepo.getAll(data);
 
 const getId = id => boardsRepo.getId(id, data);
 
-const postBoard = board => data.push(board);
+const postBoard = board =>
+  (data = boardsRepo.postObj('boardsData', board, data));
 
-const putBoard = (id, board) => (data = boardsRepo.putObj(id, board, data));
+const putBoard = (id, board) =>
+  (data = boardsRepo.putObj('boardsData', id, board, data));
 
-const deleteBoard = id => (data = boardsRepo.deleteObj(id, data));
+const deleteBoard = id => (data = boardsRepo.deleteObj('boardsData', id, data));
 
 const existsId = id => boardsRepo.existsId(id, data);
 
