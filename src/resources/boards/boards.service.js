@@ -1,4 +1,4 @@
-const boardsRepo = require('./boards.memory.repository');
+const boardsRepo = require('../memory/obj.memory.repository');
 
 const Board = require('./boards.model');
 
@@ -10,13 +10,9 @@ const getId = id => boardsRepo.getId(id, data);
 
 const postBoard = board => data.push(board);
 
-const putBoard = (id, board) => {
-  data = boardsRepo.putObj(id, board, data);
-};
+const putBoard = (id, board) => (data = boardsRepo.putObj(id, board, data));
 
 const deleteBoard = id => (data = boardsRepo.deleteObj(id, data));
-
-const existsBoard = user => boardsRepo.existsObj(user, data);
 
 const existsId = id => boardsRepo.existsId(id, data);
 
@@ -34,7 +30,6 @@ module.exports = {
   postBoard,
   putBoard,
   deleteBoard,
-  existsBoard,
   createBoard,
   existsId
 };

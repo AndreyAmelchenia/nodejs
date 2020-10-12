@@ -1,44 +1,61 @@
-const router = require('express').Router();
+const router = require('express').Router({ mergeParams: true });
 const tasksService = require('./tasks.service');
 
-router.route('/:id').get(async (req, res, next) => {
-  const exists = await tasksService.existsId(req.params.id);
+router.route('/').get(async (req, res) => {
+  const tasks = await tasksService.getAll();
+  res.json(tasks);
+});
+
+router.route('/').post(async (req, res) => {
+  const board = await tasksService.createTask({
+    ...req.body,
+    boardId: req.params.boardId
+  });
+  await tasksService.postTask(board);
+  res.json(board);
+});
+
+router.route('/:taskId').get(async (req, res) => {
+  const exists = await tasksService.existsId(req.params.taskId);
   if (exists) {
-    const tasks = await tasksService.getId(req.params.id);
-    res.set('Accept', 'application/json');
-    res.status(200);
+    const tasks = await tasksService.getId(req.params.taskId);
     res.json(tasks);
   } else {
     res.status(404);
-    res.json({ value: `A user with this Id:"${req.params.id}" no exists!!!` });
+    res.json({
+      value: `A user with this Id:"${req.params.taskId}" no exists!!!`
+    });
   }
-  next();
 });
 
-router.route('/:id').put(async (req, res, next) => {
+router.route('/:taskId').put(async (req, res) => {
   console.log();
-  const exists = await tasksService.existsId(req.params.id);
+  const exists = await tasksService.existsId(req.params.taskId);
   if (exists) {
-    await tasksService.putTask(req.params.id, req.body);
-    const taskUpdate = await tasksService.getId(req.params.id);
+    await tasksService.putTask(req.params.taskId, req.body);
+    const taskUpdate = await tasksService.getId(req.params.taskId);
     res.json(taskUpdate);
   } else {
     res.status(404);
-    res.json({ value: `A user with this Id:"${req.params.id}" no exists!!!` });
+    res.json({
+      value: `A user with this Id:"${req.params.taskId}" no exists!!!`
+    });
   }
-  next();
 });
 
-router.route('/:id').delete(async (req, res, next) => {
-  const exists = await tasksService.existsId(req.params.id);
+router.route('/:taskId').delete(async (req, res) => {
+  const exists = await tasksService.existsId(req.params.taskId);
   if (exists) {
-    tasksService.deleteTask(req.params.id);
-    res.json({ value: `A user with this Id:"${req.params.id}" no delete!!!` });
+    tasksService.deleteTask(req.params.taskId);
+    res.json({
+      value: `A user with this Id:"${req.params.taskId}" no delete!!!`
+    });
   } else {
     res.status(404);
-    res.json({ value: `A user with this Id:"${req.params.id}" no exists!!!` });
+    res.json({
+      value: `A user with this Id:"${req.params.taskId}" no exists!!!`
+    });
   }
-  next();
 });
 
 module.exports = router;

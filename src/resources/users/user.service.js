@@ -1,4 +1,4 @@
-const usersRepo = require('./user.memory.repository');
+const usersRepo = require('../memory/obj.memory.repository');
 
 const User = require('./user.model');
 
@@ -10,13 +10,9 @@ const getId = id => usersRepo.getId(id, data);
 
 const postUser = user => data.push(user);
 
-const putUser = (id, user) => {
-  data = usersRepo.putObj(id, user, data);
-};
+const putUser = (id, user) => (data = usersRepo.putObj(id, user, data));
 
 const deleteUser = id => (data = usersRepo.deleteObj(id, data));
-
-const existsUser = user => usersRepo.existsObj(user, data);
 
 const existsId = id => usersRepo.existsId(id, data);
 
@@ -35,7 +31,6 @@ module.exports = {
   postUser,
   putUser,
   deleteUser,
-  existsUser,
   createUser,
   existsId
 };

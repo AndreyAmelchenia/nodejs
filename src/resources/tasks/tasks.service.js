@@ -1,4 +1,4 @@
-const tasksRepo = require('./tasks.memory.repository');
+const tasksRepo = require('../memory/obj.memory.repository');
 
 const Task = require('./tasks.model');
 
