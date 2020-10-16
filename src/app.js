@@ -5,16 +5,18 @@ const YAML = require('yamljs');
 const userRouter = require('./resources/users/user.router');
 const boardRouter = require('./resources/boards/boards.router');
 const taskRouter = require('./resources/tasks/tasks.router');
-const morgan = require('morgan');
+const { morgan, optionMorgan } = require('./resources/logger/morgan');
 const {
   handleMiddlewareErrors,
-  handleMiddlewareUncaughtException
+  handleMiddlewareUncaught
 } = require('./resources/helper/catchErrors');
-const { logger } = require('./resources/logger/winston');
+const { loggerInfo } = require('./resources/logger/winston');
+
 const app = express();
+
 const swaggerDocument = YAML.load(path.join(__dirname, '../doc/api.yaml'));
 
-app.use(morgan('combined', { stream: logger.stream }));
+app.use(morgan(optionMorgan, { stream: loggerInfo.stream }));
 
 app.use(express.json());
 
@@ -35,14 +37,13 @@ app.use('/boards', boardRouter);
 app.use('/boards/:boardId/tasks', taskRouter);
 
 app.use(handleMiddlewareErrors);
-// PUT IT HERE
 
-process.on('uncaughtException', e => {
-  handleMiddlewareUncaughtException(e);
+process.on('uncaughtException', error => {
+  handleMiddlewareUncaught(error);
 });
 
-process.on('unhandledRejection', e => {
-  handleMiddlewareUncaughtException(e);
+process.on('unhandledRejection', error => {
+  handleMiddlewareUncaught(error);
 });
 
 // PUT IT HERE

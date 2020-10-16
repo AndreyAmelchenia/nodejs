@@ -1,14 +1,20 @@
-// const { finished } = require('stream');
-const { logger } = require('../logger/winston');
+const { ValidationError } = require('joi');
+const { loggerError, loggerInfo } = require('../logger/winston');
 
 const handleMiddlewareErrors = async (err, req, res, next) => {
+  if (err instanceof ValidationError) {
+    res.status(404);
+    res.json(err.message);
+    loggerInfo.error(`statusCode: 404, ${err}`);
+    return;
+  }
   res.status(500);
-  logger.error(`${err}`);
+  loggerError.error(`statusCode: 500, ${err}`);
   next();
 };
 
-const handleMiddlewareUncaughtException = async err => {
-  logger.error(`${err.message}`);
+const handleMiddlewareUncaught = async err => {
+  loggerError.error(`handleMiddlewareUncaught ${err}`);
 };
 
 const catchErrors = callback => async (req, res, next) => {
@@ -22,5 +28,5 @@ const catchErrors = callback => async (req, res, next) => {
 module.exports = {
   catchErrors,
   handleMiddlewareErrors,
-  handleMiddlewareUncaughtException
+  handleMiddlewareUncaught
 };
