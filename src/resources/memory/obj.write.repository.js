@@ -1,12 +1,13 @@
 const fs = require('fs');
 
-const writeObj = (path, obj) => {
+const writeObj = async (path, obj) => {
   const write = fs.createWriteStream(path);
-  write.end(JSON.stringify(obj));
+  await write.write(JSON.stringify(obj));
 };
 
-const deleteObj = path => {
-  fs.unlink(path, err => {
+const deleteObj = async path => {
+  // console.log(path);
+  await fs.unlink(path, err => {
     if (err) throw err;
   });
 };

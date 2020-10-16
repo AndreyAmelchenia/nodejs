@@ -1,7 +1,7 @@
 const path = require('path');
 const base = require('./obj.write.repository');
 
-const getAll = async data => data;
+const getAll = data => data;
 
 const getId = (id, data) => data.find(elem => elem.id === id);
 
@@ -47,7 +47,7 @@ const updateObjByIdUser = (pathName, id, data) => {
   );
 };
 
-const existsId = async (id, data) => {
+const existsId = (id, data) => {
   return data.some(elem => elem.id === id);
 };
 
