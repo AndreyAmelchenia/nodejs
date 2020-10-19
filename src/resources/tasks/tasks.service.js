@@ -1,12 +1,8 @@
-const requireDir = require('require-dir');
-
 const tasksRepo = require('../memory/obj.memory.repository');
 
 const Task = require('./tasks.model');
 
-const newData = requireDir('../memory/tasksData');
-
-let data = Object.values(newData);
+let data = [];
 
 const getAll = () => tasksRepo.getAll(data);
 

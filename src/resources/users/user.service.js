@@ -1,26 +1,24 @@
-const requireDir = require('require-dir');
 const usersRepo = require('../memory/obj.memory.repository');
 
 const User = require('./user.model');
 
-const newData = requireDir('../memory/usersData');
+let data = [];
 
-let data = Object.values(newData);
+const getAll = async () => usersRepo.getAll(data);
 
-const getAll = () => usersRepo.getAll(data);
+const getId = async id => usersRepo.getId(id, data);
 
-const getId = id => usersRepo.getId(id, data);
-
-const postUser = user => {
+const postUser = async user => {
   data = usersRepo.postObj('usersData', user, data);
 };
 
-const putUser = (id, user) =>
+const putUser = async (id, user) =>
   (data = usersRepo.putObj('usersData', id, user, data));
 
-const deleteUser = id => (data = usersRepo.deleteObj('usersData', id, data));
+const deleteUser = async id =>
+  (data = usersRepo.deleteObj('usersData', id, data));
 
-const existsId = id => usersRepo.existsId(id, data);
+const existsId = async id => usersRepo.existsId(id, data);
 
 const createUser = async body => {
   const user = await body;
