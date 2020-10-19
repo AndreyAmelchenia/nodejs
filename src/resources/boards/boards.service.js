@@ -1,11 +1,8 @@
-const requireDir = require('require-dir');
 const boardsRepo = require('../memory/obj.memory.repository');
 
 const Board = require('./boards.model');
 
-const newData = requireDir('../memory/boardsData');
-
-let data = Object.values(newData);
+let data = [];
 
 const getAll = () => boardsRepo.getAll(data);
 

@@ -1,11 +1,8 @@
-const requireDir = require('require-dir');
 const usersRepo = require('../memory/obj.memory.repository');
 
 const User = require('./user.model');
 
-const newData = requireDir('../memory/usersData');
-
-let data = Object.values(newData);
+let data = [];
 
 const getAll = async () => usersRepo.getAll(data);
 
