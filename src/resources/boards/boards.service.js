@@ -10,13 +10,10 @@ const putBoard = async (id, board) => boardsRepo.put(id, board);
 
 const deleteBoard = async id => boardsRepo.deleteBoard(id);
 
-const existsId = async id => boardsRepo.existsId(id);
-
 module.exports = {
   getAll,
   getId,
   postBoard,
   putBoard,
-  deleteBoard,
-  existsId
+  deleteBoard
 };

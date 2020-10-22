@@ -1,8 +1,9 @@
 const router = require('express').Router({ mergeParams: true });
+const { ValidationError } = require('joi');
 const tasksService = require('./tasks.service');
 const { catchErrors } = require('../helper/catchErrors');
 const { taskSchema } = require('./tasks.schema');
-const { ValidationError } = require('joi');
+const Task = require('./tasks.model');
 
 router.route('/').get(
   catchErrors(async (req, res) => {
@@ -18,7 +19,7 @@ router.route('/').post(
       boardId: req.params.boardId
     });
     if (error) return next(error);
-    const task = await tasksService.createTask(value);
+    const task = await new Task(value);
     await tasksService.postTask(task);
     res.json(task);
   })
@@ -26,9 +27,8 @@ router.route('/').post(
 
 router.route('/:taskId').get(
   catchErrors(async (req, res, next) => {
-    const exists = await tasksService.existsId(req.params.taskId);
-    if (exists) {
-      const tasks = await tasksService.getId(req.params.taskId);
+    const tasks = await tasksService.getId(req.params.taskId);
+    if (tasks) {
       res.json(tasks);
     } else {
       return next(
@@ -42,11 +42,10 @@ router.route('/:taskId').get(
 
 router.route('/:taskId').put(
   catchErrors(async (req, res, next) => {
-    const exists = await tasksService.existsId(req.params.taskId);
+    const exists = await tasksService.getId(req.params.taskId);
     if (exists) {
-      await tasksService.putTask(req.params.taskId, req.body);
-      const taskUpdate = await tasksService.getId(req.params.taskId);
-      res.json(taskUpdate);
+      const task = await tasksService.putTask(req.params.taskId, req.body);
+      res.json(task);
     } else {
       return next(
         new ValidationError(
@@ -59,9 +58,9 @@ router.route('/:taskId').put(
 
 router.route('/:taskId').delete(
   catchErrors(async (req, res, next) => {
-    const exists = await tasksService.existsId(req.params.taskId);
+    const exists = await tasksService.getId(req.params.taskId);
     if (exists) {
-      tasksService.deleteTask(req.params.taskId);
+      await tasksService.deleteTask(req.params.taskId);
       res.status(204);
       res.json({
         value: `A task with this Id:"${req.params.taskId}" no delete!!!`

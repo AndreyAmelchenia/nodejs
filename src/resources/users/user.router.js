@@ -28,9 +28,8 @@ router.route('/').post(
 
 router.route('/:userId').get(
   catchErrors(async (req, res, next) => {
-    const exists = await usersService.existsId(req.params.userId);
-    if (exists) {
-      const user = await usersService.getId(req.params.userId);
+    const user = await usersService.getId(req.params.userId);
+    if (user) {
       res.json(User.toResponse(user));
     } else {
       return next(
@@ -44,11 +43,10 @@ router.route('/:userId').get(
 
 router.route('/:userId').put(
   catchErrors(async (req, res, next) => {
-    const exists = await usersService.existsId(req.params.userId);
+    const exists = await usersService.getId(req.params.userId);
     if (exists) {
-      await usersService.putUser(req.params.userId, req.body);
-      const userUpdate = await usersService.getId(req.params.userId);
-      res.json(User.toResponse(userUpdate));
+      const user = await usersService.putUser(req.params.userId, req.body);
+      res.json(User.toResponse(user));
     } else {
       return next(
         new ValidationError(
@@ -61,7 +59,7 @@ router.route('/:userId').put(
 
 router.route('/:userId').delete(
   catchErrors(async (req, res, next) => {
-    const exists = await usersService.existsId(req.params.userId);
+    const exists = await usersService.getId(req.params.userId);
     if (exists) {
       await usersService.deleteUser(req.params.userId);
       await tasksService.updateTaskByUser(req.params.userId);

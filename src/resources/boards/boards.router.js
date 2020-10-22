@@ -19,16 +19,14 @@ router.route('/').post(
     if (error) return next(error);
     const board = await new Board(value);
     await boardsService.postBoard(board);
-    console.log(board.id);
     res.json(board);
   })
 );
 
 router.route('/:boardId').get(
   catchErrors(async (req, res, next) => {
-    const exists = await boardsService.existsId(req.params.boardId);
-    if (exists) {
-      const board = await boardsService.getId(req.params.boardId);
+    const board = await boardsService.getId(req.params.boardId);
+    if (board) {
       res.json(board);
     } else {
       return next(
@@ -42,11 +40,10 @@ router.route('/:boardId').get(
 
 router.route('/:boardId').put(
   catchErrors(async (req, res, next) => {
-    const exists = await boardsService.existsId(req.params.boardId);
+    const exists = await boardsService.getId(req.params.boardId);
     if (exists) {
-      await boardsService.putBoard(req.params.boardId, req.body);
-      const boardUpdate = await boardsService.getId(req.params.boardId);
-      res.json(boardUpdate);
+      const board = await boardsService.putBoard(req.params.boardId, req.body);
+      res.json(board);
     } else {
       return next(
         new ValidationError(
@@ -59,7 +56,7 @@ router.route('/:boardId').put(
 
 router.route('/:boardId').delete(
   catchErrors(async (req, res, next) => {
-    const exists = await boardsService.existsId(req.params.boardId);
+    const exists = await boardsService.getId(req.params.boardId);
     if (exists) {
       await boardsService.deleteBoard(req.params.boardId);
       await tasksService.deleteTaskByBoard(req.params.boardId);
