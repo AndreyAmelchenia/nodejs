@@ -10,6 +10,7 @@ const {
   handleMiddlewareErrors,
   handleMiddlewareUncaught
 } = require('./resources/helper/catchErrors');
+
 const { loggerInfo } = require('./resources/logger/winston');
 
 const app = express();

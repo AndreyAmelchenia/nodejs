@@ -9,6 +9,7 @@ const handleMiddlewareErrors = async (err, req, res, next) => {
     return;
   }
   res.status(500);
+  res.json(err.message);
   loggerError.error(`statusCode: 500, ${err}`);
   next();
 };

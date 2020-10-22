@@ -1,4 +1,5 @@
 const router = require('express').Router();
+const Board = require('./boards.model');
 const { catchErrors } = require('../helper/catchErrors');
 const boardsService = require('./boards.service');
 const tasksService = require('../tasks/tasks.service');
@@ -16,8 +17,9 @@ router.route('/').post(
   catchErrors(async (req, res, next) => {
     const { error, value } = boardSchema.validate(req.body);
     if (error) return next(error);
-    const board = await boardsService.createBoard(value);
+    const board = await new Board(value);
     await boardsService.postBoard(board);
+    console.log(board.id);
     res.json(board);
   })
 );
