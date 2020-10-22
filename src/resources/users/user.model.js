@@ -14,7 +14,11 @@ const userSchema = new mongoose.Schema(
   { versionKey: false }
 );
 
-userSchema.statics.toResponse = ({ id, name, login }) => ({ id, name, login });
+userSchema.statics.toResponse = ({ _id, name, login }) => ({
+  id: _id,
+  name,
+  login
+});
 
 const User = mongoose.model('User', userSchema);
 
