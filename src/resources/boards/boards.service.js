@@ -1,37 +1,19 @@
-const boardsRepo = require('../memory/obj.memory.repository');
+const boardsRepo = require('./boards.memory.repository');
 
-const Board = require('./boards.model');
+const getAll = async () => boardsRepo.getAll();
 
-let data = [];
+const getId = async id => boardsRepo.getId(id);
 
-const getAll = () => boardsRepo.getAll(data);
+const postBoard = async board => boardsRepo.post(board);
 
-const getId = id => boardsRepo.getId(id, data);
+const putBoard = async (id, board) => boardsRepo.put(id, board);
 
-const postBoard = board =>
-  (data = boardsRepo.postObj('boardsData', board, data));
-
-const putBoard = (id, board) =>
-  (data = boardsRepo.putObj('boardsData', id, board, data));
-
-const deleteBoard = id => (data = boardsRepo.deleteObj('boardsData', id, data));
-
-const existsId = id => boardsRepo.existsId(id, data);
-
-const createBoard = async body => {
-  const board = await body;
-  return new Board({
-    title: board.title,
-    columns: board.columns
-  });
-};
+const deleteBoard = async id => boardsRepo.deleteBoard(id);
 
 module.exports = {
   getAll,
   getId,
   postBoard,
   putBoard,
-  deleteBoard,
-  createBoard,
-  existsId
+  deleteBoard
 };

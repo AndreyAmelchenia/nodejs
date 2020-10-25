@@ -1,47 +1,25 @@
-const tasksRepo = require('../memory/obj.memory.repository');
+const tasksRepo = require('./tasks.memory.repository');
 
-const Task = require('./tasks.model');
+const getAll = async () => tasksRepo.getAll();
 
-let data = [];
+const postTask = async task => tasksRepo.post(task);
 
-const getAll = () => tasksRepo.getAll(data);
+const getId = async id => tasksRepo.getId(id);
 
-const postTask = task => (data = tasksRepo.postObj('tasksData', task, data));
+const putTask = async (id, task) => tasksRepo.put(id, task);
 
-const getId = id => tasksRepo.getId(id, data);
+const deleteTask = async id => tasksRepo.deleteTask(id);
 
-const putTask = (id, task) =>
-  (data = tasksRepo.putObj('tasksData', id, task, data));
-const deleteTask = id => (data = tasksRepo.deleteObj('tasksData', id, data));
+const updateTaskByUser = async userId => tasksRepo.updateTasksByIdUser(userId);
 
-const updateTaskByUser = id =>
-  (data = tasksRepo.updateObjByIdUser('tasksData', id, data));
-
-const deleteTaskByBoard = id =>
-  (data = tasksRepo.deleteObjByIdBoard('tasksData', id, data));
-
-const existsId = id => tasksRepo.existsId(id, data);
-
-const createTask = body => {
-  const task = body;
-  return new Task({
-    title: task.title,
-    columns: task.columns,
-    order: task.order,
-    description: task.description,
-    userId: task.userId,
-    boardId: task.boardId,
-    columnId: task.columnId
-  });
-};
+const deleteTaskByBoard = async BoardId =>
+  tasksRepo.deleteTasksByIdBoard(BoardId);
 
 module.exports = {
-  createTask,
   getAll,
   postTask,
   getId,
   putTask,
-  existsId,
   deleteTask,
   updateTaskByUser,
   deleteTaskByBoard
