@@ -5,6 +5,7 @@ const usersService = require('./user.service');
 const { catchErrors } = require('../../helper/catchErrors');
 const { userSchema } = require('./user.schema');
 const { ValidationError } = require('joi');
+const { createPassword } = require('../../utils/create.password');
 
 router.route('/').get(
   catchErrors(async (req, res) => {
@@ -18,7 +19,8 @@ router.route('/').post(
     const userValid = await userSchema.validateAsync({
       ...req.body
     });
-    const user = await new User(userValid);
+    const userHashPassword = await createPassword(userValid);
+    const user = await new User(userHashPassword);
     await usersService.postUser(user);
     res.json(User.toResponse(user));
   })
@@ -41,7 +43,9 @@ router.route('/:userId').put(
   catchErrors(async (req, res) => {
     const exists = await usersService.getId(req.params.userId);
     if (exists) {
-      const user = await usersService.putUser(req.params.userId, req.body);
+      const userHashPassword = await createPassword(req.body);
+      await usersService.putUser(req.params.userId, userHashPassword);
+      const user = await usersService.getId(req.params.userId);
       res.json(User.toResponse(user));
     } else {
       throw new ValidationError(

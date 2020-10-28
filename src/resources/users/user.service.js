@@ -4,6 +4,8 @@ const getAll = async () => usersRepo.getAll();
 
 const getId = async id => usersRepo.getId(id);
 
+const getLogin = async login => usersRepo.getLogin(login);
+
 const postUser = async user => usersRepo.post(user);
 
 const putUser = async (id, user) => usersRepo.put(id, user);
@@ -15,5 +17,6 @@ module.exports = {
   getId,
   postUser,
   putUser,
-  deleteUser
+  deleteUser,
+  getLogin
 };
