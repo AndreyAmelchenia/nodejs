@@ -5,6 +5,8 @@ const YAML = require('yamljs');
 const userRouter = require('./resources/users/user.router');
 const boardRouter = require('./resources/boards/boards.router');
 const taskRouter = require('./resources/tasks/tasks.router');
+const loginRouter = require('./resources/authorization/authorization.router');
+const authorizationChecker = require('./helper/authorizationChecker');
 const { morgan, optionMorgan } = require('./logger/morgan');
 const {
   handleMiddlewareErrors,
@@ -31,11 +33,13 @@ app.use('/', (req, res, next) => {
   next();
 });
 
-app.use('/users', userRouter);
+app.use('/users', authorizationChecker, userRouter);
 
-app.use('/boards', boardRouter);
+app.use('/boards', authorizationChecker, boardRouter);
 
-app.use('/boards/:boardId/tasks', taskRouter);
+app.use('/boards/:boardId/tasks', authorizationChecker, taskRouter);
+
+app.use('/login', loginRouter);
 
 app.use(handleMiddlewareErrors);
 
